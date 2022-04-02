@@ -1,5 +1,3 @@
-import { forEachLeadingCommentRange } from 'typescript';
-
 export function secondsToTime(seconds: number): string {
   // função que recebe um númeor, arredonda usando a função floor,
   // e se o número for menor que 10 adiciona os ZEROS à esquerda e informa o número de cadas
