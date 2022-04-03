@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useInterval } from '../../hooks/useInterval';
 import { secondsToTime } from '../../utils/secondsToTime';
 import Button from '../Button';
@@ -35,30 +35,48 @@ const PomodoroTimer = (props: Props): JSX.Element => {
   useInterval(
     () => {
       setMainTimer(mainTime - 1);
+      if (working) setFullWorkingTime(fullWorkingTime + 1);
     },
     timeCounting ? 1000 : null,
   );
 
-  const configureWork = () => {
+  const configureWork = useCallback(() => {
     setTimeCounting(true);
     setWorking(true);
     setResting(false);
     setMainTimer(props.pomodoroTime);
     audioStartWorking.play();
-  };
+  }, [
+    setTimeCounting,
+    setWorking,
+    setResting,
+    setMainTimer,
+    props.pomodoroTime,
+  ]);
 
-  const configureRest = (long: boolean) => {
-    setTimeCounting(true);
-    setWorking(false);
-    setResting(true);
+  const configureRest = useCallback(
+    (long: boolean) => {
+      setTimeCounting(true);
+      setWorking(false);
+      setResting(true);
 
-    if (long) {
-      setMainTimer(props.longRestTime);
-    } else {
-      setMainTimer(props.shortRestTime);
-    }
-    audioFinishWorking.play();
-  };
+      if (long) {
+        setMainTimer(props.longRestTime);
+      } else {
+        setMainTimer(props.shortRestTime);
+      }
+
+      audioFinishWorking.play();
+    },
+    [
+      setTimeCounting,
+      setWorking,
+      setResting,
+      setMainTimer,
+      props.longRestTime,
+      props.shortRestTime,
+    ],
+  );
 
   useEffect(() => {
     if (working) document.body.classList.add('working');
@@ -89,7 +107,7 @@ const PomodoroTimer = (props: Props): JSX.Element => {
 
   return (
     <div className="pomodoro">
-      <h2>You are: working</h2>
+      <h2>Você está: {working ? 'Trabalhando' : 'Descansando'}</h2>
       <Timer mainTime={mainTime} />
       <div className="buttons">
         <Button text="Work" onClick={() => configureWork()}></Button>
