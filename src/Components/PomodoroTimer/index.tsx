@@ -4,6 +4,8 @@ import { secondsToTime } from '../../utils/secondsToTime';
 import Button from '../Button';
 import Timer from '../Timer';
 
+import { Buttons, Container, Details, Info, Title } from './styles';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bellStart = require('../../sounds/bell-start.mp3');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -23,6 +25,7 @@ const PomodoroTimer = (props: Props): JSX.Element => {
   const [mainTime, setMainTimer] = useState(props.pomodoroTime);
   const [timeCounting, setTimeCounting] = useState(false);
   const [working, setWorking] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [resting, setResting] = useState(false);
   const [cyclesQtdManager, setCyclesQtdManager] = useState(
     new Array(props.cycles - 1).fill(true),
@@ -79,8 +82,11 @@ const PomodoroTimer = (props: Props): JSX.Element => {
   );
 
   useEffect(() => {
-    if (working) document.body.classList.add('working');
-    if (resting) document.body.classList.remove('working');
+    if (!working && !resting) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
 
     if (mainTime > 0) return;
 
@@ -106,25 +112,36 @@ const PomodoroTimer = (props: Props): JSX.Element => {
   ]);
 
   return (
-    <div className="pomodoro">
-      <h2>Você está: {working ? 'Trabalhando' : 'Descansando'}</h2>
+    <Container working={working}>
+      <Title>Você está: {working ? 'Trabalhando' : 'Descansando'}</Title>
       <Timer mainTime={mainTime} />
-      <div className="buttons">
-        <Button text="Work" onClick={() => configureWork()}></Button>
-        <Button text="Rest" onClick={() => configureRest(false)}></Button>
+      <Buttons>
         <Button
-          className={!working && !resting ? 'hidden' : ''}
+          text="Work"
+          onClick={() => configureWork()}
+          working={working}
+          hidden={false}
+        ></Button>
+        <Button
+          text="Rest"
+          onClick={() => configureRest(false)}
+          working={working}
+          hidden={false}
+        ></Button>
+        <Button
           text={timeCounting ? 'Pause' : 'Play'}
           onClick={() => setTimeCounting(!timeCounting)}
+          working={working}
+          hidden={hidden}
         ></Button>
-      </div>
+      </Buttons>
 
-      <div className="details">
-        <p> Ciclos concluidos: {completedCycles}</p>
-        <p> Horas trabalhadas: {secondsToTime(fullWorkingTime)}</p>
-        <p> Pomodoros concluidos: {numberOfPomodoros}</p>
-      </div>
-    </div>
+      <Details>
+        <Info> Ciclos concluidos: {completedCycles}</Info>
+        <Info> Horas trabalhadas: {secondsToTime(fullWorkingTime)}</Info>
+        <Info> Pomodoros concluidos: {numberOfPomodoros}</Info>
+      </Details>
+    </Container>
   );
 };
 
