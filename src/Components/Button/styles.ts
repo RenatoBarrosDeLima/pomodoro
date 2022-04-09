@@ -1,13 +1,22 @@
 import styled from 'styled-components';
 
+import {
+  buttonPrimaryColor,
+  buttonSecondaryColor,
+  buttonTextPrimaryColor,
+  buttonTextSecondaryColor,
+} from '../../config/colors';
+
 interface Props {
   working: boolean;
   hidden: boolean;
 }
 
 export const Container = styled.button<Props>`
-  background: ${($props) => ($props.working ? '#ef5d50' : '#ffffff')};
-  color: ${($props) => ($props.working ? '#ffffff' : '#000000')};
+  background: ${($props) =>
+    $props.working ? buttonSecondaryColor : buttonPrimaryColor};
+  color: ${($props) =>
+    $props.working ? buttonTextSecondaryColor : buttonTextPrimaryColor};
   display: ${($props) => ($props.hidden ? 'none' : '')};
   border: none;
   cursor: pointer;

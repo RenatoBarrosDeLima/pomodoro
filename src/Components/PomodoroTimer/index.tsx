@@ -117,19 +117,19 @@ const PomodoroTimer = (props: Props): JSX.Element => {
       <Timer mainTime={mainTime} />
       <Buttons>
         <Button
-          text="Work"
+          text="Trabalhar"
           onClick={() => configureWork()}
           working={working}
           hidden={false}
         ></Button>
         <Button
-          text="Rest"
+          text="Descansar"
           onClick={() => configureRest(false)}
           working={working}
           hidden={false}
         ></Button>
         <Button
-          text={timeCounting ? 'Pause' : 'Play'}
+          text={timeCounting ? 'Pausar' : 'Continuar'}
           onClick={() => setTimeCounting(!timeCounting)}
           working={working}
           hidden={hidden}
